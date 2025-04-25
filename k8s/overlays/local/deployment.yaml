@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: kube-argo-express
 spec:
+  replicas: 2
   template:
     spec:
       containers:
