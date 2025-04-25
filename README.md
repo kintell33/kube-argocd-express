@@ -214,3 +214,55 @@ Borrar el cluster de k3d:
 ```bash
 k3d cluster delete argo-local
 ```
+
+
+## 📂 Estructura de carpetas `k8s/`
+
+Dentro de la carpeta `k8s/` organizamos los manifiestos de Kubernetes usando una estructura **base / overlays** siguiendo buenas prácticas de Kustomize:
+
+```
+k8s/
+├── base/
+│   ├── deployment.yaml
+│   ├── svc.yaml
+│   └── kustomization.yaml
+└── overlays/
+    └── local/
+        ├── deployment.yaml
+        ├── cm.yaml
+        ├── ingress.yaml
+        ├── kustomization.yaml
+```
+
+---
+
+### 📦 `base/`
+
+Contiene la definición **genérica y reutilizable** del servicio.
+
+- **deployment.yaml**: Define cómo correr el contenedor (imagen, puertos, réplicas default, recursos).
+- **svc.yaml**: Define un Service para exponer el Pod internamente en Kubernetes.
+- **kustomization.yaml**: Indica qué recursos (`deployment.yaml`, `svc.yaml`) componen el base.
+
+> **Nota:** No debería tener configuraciones específicas de entorno.
+
+---
+
+### 🛠️ `overlays/local/`
+
+Contiene las configuraciones **específicas para el entorno local**.
+
+- **deployment.yaml**: "Parches" para el `deployment.yaml` base (por ejemplo, número de réplicas o imagen específica).
+- **cm.yaml**: Define un ConfigMap con variables de entorno específicas para local.
+- **ingress.yaml**: Define reglas para exponer el servicio hacia afuera (opcional, depende de tu setup local).
+- **kustomization.yaml**: Apunta a `../base` e incluye los parches, ConfigMaps e Ingress necesarios para levantar el entorno local.
+
+> **Nota:** Cada entorno (dev, staging, prod) podría tener su propio overlay.
+
+---
+
+### 🧠 Resumen general
+
+- `base/` = **Comportamiento común** (lo que no cambia entre ambientes)
+- `overlays/` = **Personalización por ambiente** (lo que cambia dependiendo de dónde desplegamos)
+
