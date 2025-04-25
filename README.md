@@ -87,7 +87,7 @@ npm run k3d:cluster:delete
 npm run k3d:cluster:up
 ```
 
-5. Aplicart manifiestos con kustomize
+5. Aplicar manifiestos con kustomize
 
 ```
 kubectl apply -k k8s/overlays/local
@@ -111,4 +111,55 @@ kubectl port-forward svc/kube-argo-express 8080:8080
 Obtener eventos
 ```
 kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
+8. Crear el namespace de argocd
+
+```
+kubectl create namespace argocd
+```
+
+9. Aplicar el manifiesto oficial de instalacion
+```
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Validar instalacion de argo
+
+```
+kubectl get pods -n argocd -w
+```
+
+10. forwardear el dashboard de argo
+
+```
+kubectl port-forward svc/argocd-server -n argocd 8083:443
+```
+
+Ir a https://localhost:8083/
+
+11. Login argo
+
+User: admin
+Password:
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+12. Aplicar configuracion en argocd para manejar cd
+
+```
+kubectl apply -f application.yaml -n argocd
+```
+
+> ⚡ "Este archivo debe apuntar correctamente a tu repo GitHub y tu path de manifiestos. Si cambias el branch o el path, actualizalo."
+
+13. Limpieza de los recursos creados
+
+```
+# Borrar aplicación de ArgoCD
+kubectl delete application kube-argo-express -n argocd
+
+# Borrar cluster de k3d
+k3d cluster delete argo-local
 ```

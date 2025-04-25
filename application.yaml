@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-argo-express
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kintell33/kube-argocd-express
+    targetRevision: master
+    path: k8s/overlays/local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
