@@ -1,0 +1,10 @@
+apiVersion: k3d.io/v1alpha4
+kind: Simple
+metadata:
+  name: argo-local
+registries:
+  config: |
+    mirrors:
+      "localhost:5000":
+        endpoint:
+          - http://host.k3d.internal:5000

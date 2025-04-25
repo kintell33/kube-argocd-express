@@ -1,0 +1,10 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: env-labels
+labels:
+  environment: local
+fieldSpecs:
+  - path: metadata/labels
+    create: true
+    kind: Deployment

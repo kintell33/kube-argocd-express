@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-argo-express
+  labels:
+    app: kube-argo-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-argo-express
+  template:
+    metadata:
+      labels:
+        app: kube-argo-express
+    spec:
+      containers:
+        - name: kube-argo-express
+          image: localhost:5000/kube-argo-express:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: API_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: kube-argo-express-config
+                  key: API_VERSION
