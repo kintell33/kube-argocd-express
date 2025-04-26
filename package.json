@@ -1,0 +1,22 @@
+{
+  "name": "kube-argo-express",
+  "version": "1.0.0",
+  "description": "Mini proyecto de ejemplo usando **Express.js**, **Kubernetes**, **ArgoCD** y **Kustomize** para desplegar una aplicación de manera automatizada siguiendo prácticas de GitOps.",
+  "main": "index.js",
+  "scripts": {
+    "registry:up": "docker-compose up -d registry",
+    "docker:build": "docker build -t localhost:5000/kube-argo-express:latest -f ./app/Dockerfile .",
+    "docker:tag": "docker tag localhost:5000/kube-argo-express:latest localhost:5000/kube-argo-express:latest",
+    "docker:push": "docker push localhost:5000/kube-argo-express:latest",
+    "kube:app:cluster:up": "k3d cluster create --config ./app/k3d-config.yaml -p \"8081:80@loadbalancer\" --api-port 6550",
+    "kube:app:cluster:delete": "k3d cluster delete argo-local",
+    "kube:app:cluster:port-forward": "kubectl port-forward svc/kube-argo-express 8080:8080",
+    "kube:argo:cluster:up": "kubectl create namespace argocd  && kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml",
+    "kube:argo:cluster:delete": "kubectl delete application kube-argo-express -n argocd && kubectl delete namespace argocd",
+    "kube:argo:cluster:port-forward": "kubectl port-forward svc/argocd-server -n argocd 8083:443",
+    "kube:argo:apply": "kubectl apply -f application.yaml -n argocd",
+    "kustomize:apply": "kubectl apply -k k8s/overlays/local"
+  },
+  "author": "",
+  "license": "ISC"
+}

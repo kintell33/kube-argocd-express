@@ -4,15 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "start:kube": "k3d cluster create argo-local --registry-create k3d-myregistry.localhost:5000",
-    "pipeline:run": "source ../scripts/simulate-pipeline.sh",
-    "registry:up": "docker-compose up -d registry",
-    "docker:build": "docker build -t localhost:5000/kube-argo-express:latest ./",
-    "docker:tag": "docker tag localhost:5000/kube-argo-express:latest localhost:5000/kube-argo-express:latest",
-    "docker:push": "docker push localhost:5000/kube-argo-express:latest",
-    "k3d:cluster:up": "k3d cluster create --config k3d-config.yaml -p \"8081:80@loadbalancer\" --api-port 6550",
-    "k3d:cluster:delete": "k3d cluster delete argo-local"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

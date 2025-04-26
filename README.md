@@ -82,7 +82,7 @@ Herramienta para correr clusters de Kubernetes (K3s) dentro de Docker de forma l
 ### 1. Levantar el registry local:
 
 ```bash
-docker-compose up -d registry
+npm run registry:up
 ```
 
 ---
@@ -107,8 +107,8 @@ npm run docker:push
 ### 4. Iniciar el cluster de Kubernetes (k3d):
 
 ```bash
-npm run k3d:cluster:delete
-npm run k3d:cluster:up
+npm run kube:app:cluster:delete
+npm run kube:app:cluster:up
 ```
 
 ---
@@ -116,7 +116,7 @@ npm run k3d:cluster:up
 ### 5. Aplicar manifiestos con Kustomize:
 
 ```bash
-kubectl apply -k k8s/overlays/local
+npm run kustomize:apply
 ```
 
 ---
@@ -150,13 +150,7 @@ kubectl port-forward svc/kube-argo-express 8080:8080
 Crear el namespace:
 
 ```bash
-kubectl create namespace argocd
-```
-
-Aplicar el manifiesto de instalación:
-
-```bash
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+npm run kube:argo:cluster:up
 ```
 
 Validar instalación:
@@ -172,7 +166,7 @@ kubectl get pods -n argocd -w
 Forwardear ArgoCD server:
 
 ```bash
-kubectl port-forward svc/argocd-server -n argocd 8083:443
+npm run kube:argo:cluster:port-forward
 ```
 
 Acceder a: [https://localhost:8083/](https://localhost:8083/)
@@ -185,7 +179,7 @@ Usuario: `admin`
 Password:
 
 ```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
 ```
 
 ---
@@ -193,7 +187,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### 11. Aplicar configuración para manejar CD desde ArgoCD:
 
 ```bash
-kubectl apply -f application.yaml -n argocd
+npm run kube:argo:apply
 ```
 
 > ⚡ **Importante:** El `application.yaml` debe apuntar correctamente al repo GitHub y al path de manifiestos (`k8s/overlays/local`).  
@@ -206,13 +200,13 @@ kubectl apply -f application.yaml -n argocd
 Borrar la aplicación de ArgoCD:
 
 ```bash
-kubectl delete application kube-argo-express -n argocd
+npm run kube:argo:cluster:delete
 ```
 
-Borrar el cluster de k3d:
+Borrar el cluster de la app:
 
 ```bash
-k3d cluster delete argo-local
+npm run k3d:app:cluster:delete
 ```
 
 
